@@ -1,40 +1,44 @@
 package app
 
 import (
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jaydenjz/accounting/internal/usecase"
-	"github.com/jaydenjz/accounting/pkg/postgres"
-	"github.com/spf13/viper"
+	"github.com/sirupsen/logrus"
+	"golang.org/x/sync/errgroup"
 )
 
-func Run() {
-	// Repository
+func RouterTest() http.Handler {
+	e := gin.New()
+	e.Use(gin.Recovery())
+	e.GET("/", func(c *gin.Context) {
+		c.JSON(
+			http.StatusOK,
+			"Welcome server 02",
+		)
+	})
 
-	paymentUseCase := usecase.New()
-	pg, err := postgres.New(cfg.PG.URL, postgres.MaxPoolSize(cfg.PG.PoolMax))
+	return e
+}
+
+func Run() {
+
 	// HTTP Server
-	handler := gin.New()
-	v1.newRouter(handler, paymentUseCase)
-	server01 := &http.Server{
-		Addr:         ":8080",
-		Handler:      handler,
+	testserver := &http.Server{
+		Addr:         ":8081",
+		Handler:      RouterTest(),
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
 	}
-}
 
-func ReadConfigFile() {
-	viper.SetConfigFile("config.json")
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
+	g := new(errgroup.Group)
+	g.Go(func() error {
+		logrus.Info("App is running at http://localhost:8081")
+		return testserver.ListenAndServe()
+	})
 
-	if viper.GetBool(`debug`) {
-		log.Println("Service RUN on DEBUG mode")
+	if err := g.Wait(); err != nil {
+		logrus.Fatal(err)
 	}
 }
