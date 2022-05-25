@@ -1,16 +1,21 @@
 package app
 
 import (
-	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jaydenjz/accounting/config"
+	v1 "github.com/jaydenjz/accounting/internal/delivery/http/v1"
 	"github.com/jaydenjz/accounting/internal/usecase"
+	"github.com/jaydenjz/accounting/internal/usecase/repository"
+	"github.com/jaydenjz/accounting/pkg/httpserver"
 	"github.com/jaydenjz/accounting/pkg/postgres"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
+)
+
+var (
+	g errgroup.Group
 )
 
 func RouterTest() http.Handler {
@@ -27,28 +32,22 @@ func RouterTest() http.Handler {
 }
 
 func Run(cfg *config.Config) {
-	// Repository
-	pg, err := postgres.New(cfg.PG.URL)
+	// Postgres
+	pg, err := postgres.New(cfg.Postgres.DatabaseUrl)
 	if err != nil {
-		logrus.Fatal(fmt.Errorf("app - Run - postgres.New: %w", err))
+		logrus.Fatal("app - Run - postgres.New:", err)
 	}
 	defer pg.Close()
 
 	// Use case
-	paymentUseCase := usecase.New()
+	paymentUseCase := usecase.New(repository.New(pg))
 
 	// HTTP Server
-	testserver := &http.Server{
-		Addr:         ":8081",
-		Handler:      RouterTest(),
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
+	handler := gin.New()
+	v1.NewRouter(handler, paymentUseCase)
 
-	g := new(errgroup.Group)
 	g.Go(func() error {
-		logrus.Info("App is running at http://localhost:8081")
-		return testserver.ListenAndServe()
+		return httpserver.New(handler)
 	})
 
 	if err := g.Wait(); err != nil {

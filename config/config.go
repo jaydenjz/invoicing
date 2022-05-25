@@ -6,45 +6,48 @@ import (
 	"github.com/spf13/viper"
 )
 
+var Cfg *Config
+
 type (
 	Config struct {
-		App  `yaml:"APP"`
-		HTTP `yaml:"HTTP"`
-		Log  `yaml:"LOGGER"`
-		PG   `yaml:"POSTGRES"`
+		App      `mapstructure:"APP"`
+		HTTP     `mapstructure:"HTTP"`
+		Log      `mapstructure:"LOGGER"`
+		Postgres `mapstructure:"POSTGRES"`
 	}
 
 	// App -.
 	App struct {
-		Name    string `env-required:"true" yaml:"NAME"    env:"APP_NAME"`
-		Version string `env-required:"true" yaml:"VERSION" env:"APP_VERSION"`
+		Name    string `mapstructure:"NAME"`
+		Version string `mapstructure:"VERSION"`
 	}
 
 	// HTTP -.
 	HTTP struct {
-		Port string `env-required:"true"  yaml:"HTTP_PORT"  env:"HTTP_PORT"`
+		Port string `mapstructure:"PORT"`
 	}
 
 	// Log -.
 	Log struct {
-		Level string `env-required:"true"  yaml:"LOG_LEVEL"  env:"LOG_LEVEL"`
+		Level string `mapstructure:"LEVEL"`
 	}
 
-	// PG -.
-	PG struct {
-		PoolMax int    `env-required:"true"  yaml:"PG_POOL_MAX"  env:"PG_POOL_MAX"`
-		URL     string `env-required:"true"  yaml:"PG_URL"       env:"PG_URL"`
+	// Postgres -.
+	Postgres struct {
+		PoolMax     int    `mapstructure:"POOL_MAX"`
+		DatabaseUrl string `mapstructure:"DATABASE_URL"`
 	}
 )
 
-func NewConfig() (*Config, error) {
-	cfg := &Config{}
-
-	viper.SetConfigFile("./config/config.yml")
+func New() (*Config, error) {
+	viper.SetConfigFile("../../config/config.yml")
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
 	}
-
-	return cfg, nil
+	err = viper.Unmarshal(&Cfg)
+	if err != nil {
+		return nil, fmt.Errorf("unable to decode into struct, %v", err)
+	}
+	return Cfg, nil
 }

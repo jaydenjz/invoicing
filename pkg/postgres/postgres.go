@@ -15,13 +15,13 @@ type Postgres struct {
 func New(url string) (*Postgres, error) {
 	poolConfig, err := pgxpool.ParseConfig(url)
 	if err != nil {
-		logrus.Fatal("Unable to parse DATABASE_URL", "error", err)
+		logrus.Fatal("Unable to parse DATABASE_URL:", err)
 		os.Exit(1)
 	}
 
 	db, err := pgxpool.ConnectConfig(context.Background(), poolConfig)
 	if err != nil {
-		logrus.Fatal("Unable to create connection pool", "error", err)
+		logrus.Fatal("Unable to create connection pool", err)
 		os.Exit(1)
 	}
 
