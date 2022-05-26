@@ -15,7 +15,6 @@ type Server struct {
 const (
 	_defaultReadTimeout  = 5 * time.Second
 	_defaultWriteTimeout = 10 * time.Second
-	_defaultAddr         = ":8081"
 )
 
 // New -.
