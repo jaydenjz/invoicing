@@ -3,6 +3,7 @@ package app
 import (
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jaydenjz/accounting/config"
 	v1 "github.com/jaydenjz/accounting/internal/delivery/http/v1"
@@ -43,11 +44,12 @@ func Run(cfg *config.Config) {
 	paymentUseCase := usecase.New(repository.New(pg))
 
 	// HTTP Server
-	handler := gin.New()
-	v1.NewRouter(handler, paymentUseCase)
+	router := gin.New()
+	router.Use(cors.Default())
+	v1.NewRouter(router, paymentUseCase)
 
 	g.Go(func() error {
-		return httpserver.New(handler)
+		return httpserver.New(router, *cfg)
 	})
 
 	if err := g.Wait(); err != nil {

@@ -27,8 +27,9 @@ type getPaymentRequest struct {
 }
 
 func (r *paymentRoutes) getPayment(ctx *gin.Context) {
-	var req getPaymentRequest
-	payments, err := r.u.GetPaymentHistory(ctx.Request.Context(), req.Start, req.End)
+	//var req getPaymentRequest
+	mockTime := time.Now()
+	payments, err := r.u.GetPaymentHistory(ctx.Request.Context(), mockTime, mockTime)
 	if err != nil {
 		logrus.Error(err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, err)

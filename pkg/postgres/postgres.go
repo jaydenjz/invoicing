@@ -1,31 +1,24 @@
 package postgres
 
 import (
-	"context"
 	"os"
 
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sirupsen/logrus"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type Postgres struct {
-	Pool *pgxpool.Pool
+	*gorm.DB
 }
 
 func New(url string) (*Postgres, error) {
-	poolConfig, err := pgxpool.ParseConfig(url)
+	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
 		logrus.Fatal("Unable to parse DATABASE_URL:", err)
 		os.Exit(1)
 	}
-
-	db, err := pgxpool.ConnectConfig(context.Background(), poolConfig)
-	if err != nil {
-		logrus.Fatal("Unable to create connection pool", err)
-		os.Exit(1)
-	}
-
-	pg := &Postgres{Pool: db}
+	pg := &Postgres{db}
 	return pg, nil
 }
 

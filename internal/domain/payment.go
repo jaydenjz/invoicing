@@ -6,8 +6,8 @@ import (
 )
 
 type Payment struct {
-	Id            int64
-	Amount        uint64    `json:"amount"`
+	Id            int       `gorm:"column:PaymentId"`
+	Amount        float32   `json:"amount"`
 	PaymentDate   time.Time `json:"paymentDate"`
 	PaymentMethod string    `json:"paymentMethod"`
 	CustomerName  string    `json:"customerName"`

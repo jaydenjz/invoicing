@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/jaydenjz/accounting/config"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,12 +19,12 @@ const (
 )
 
 // New -.
-func New(handler http.Handler) error {
+func New(handler http.Handler, config config.Config) error {
 	httpServer := &http.Server{
 		Handler:      handler,
 		ReadTimeout:  _defaultReadTimeout,
 		WriteTimeout: _defaultWriteTimeout,
-		Addr:         _defaultAddr,
+		Addr:         config.Port,
 	}
 
 	logrus.Info("Service is running at: http://localhost", httpServer.Addr)

@@ -3,8 +3,8 @@ APP:
   VERSION: '1.0.0'
 
 HTTP:
-  PORT: "8080"
+  PORT: ":5000"
 
 POSTGRES:
-  DATABASE_URL: "postgres://postgres:admin@localhost:5432/accounting"
+  DATABASE_URL: "postgres://postgres:admin@localhost:5201/accounting"
   POOL_MAX: 2
