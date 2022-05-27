@@ -1,10 +1,10 @@
-APP:
-  NAME: 'accounting'
-  VERSION: '1.0.0'
+app:
+  name: 'accounting'
+  version: '1.0.0'
 
-HTTP:
-  PORT: ":5000"
+http:
+  port: ":5000"
 
-POSTGRES:
-  DATABASE_URL: "postgres://postgres:admin@localhost:5201/accounting"
-  POOL_MAX: 2
+postgres:
+  database_url: "postgres://postgres:admin@localhost:5201/accounting"
+  pool_max: 2
