@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-type Payment struct {
+type Invoice struct {
 	Id            int       `gorm:"column:PaymentId"`
 	Amount        float32   `json:"amount"`
 	PaymentDate   time.Time `json:"paymentDate"`
@@ -13,6 +13,6 @@ type Payment struct {
 	CustomerName  string    `json:"customerName"`
 }
 
-type PaymentRepository interface {
-	GetByDateRange(ctx context.Context, start, end time.Time) ([]Payment, error)
+type InvoiceRepository interface {
+	GetByDateRange(ctx context.Context, start, end time.Time) ([]Invoice, error)
 }

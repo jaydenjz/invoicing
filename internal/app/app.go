@@ -41,12 +41,12 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	// Use case
-	paymentUseCase := usecase.New(repository.New(pg))
+	invoiceUseCase := usecase.New(repository.New(pg))
 
 	// HTTP Server
 	router := gin.New()
 	router.Use(cors.Default())
-	v1.NewRouter(router, paymentUseCase)
+	v1.NewRouter(router, invoiceUseCase)
 
 	g.Go(func() error {
 		return httpserver.New(router, *cfg)

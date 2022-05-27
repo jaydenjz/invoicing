@@ -8,22 +8,22 @@ import (
 	"github.com/jaydenjz/accounting/pkg/postgres"
 )
 
-type PaymentRepo struct {
+type InvoiceRepo struct {
 	*postgres.Postgres
 }
 
-var payments []domain.Payment
+var invoices []domain.Invoice
 
-func New(pg *postgres.Postgres) *PaymentRepo {
-	return &PaymentRepo{pg}
+func New(pg *postgres.Postgres) *InvoiceRepo {
+	return &InvoiceRepo{pg}
 }
 
-func (r *PaymentRepo) GetByDateRange(ctx context.Context, start, end time.Time) ([]domain.Payment, error) {
+func (r *InvoiceRepo) GetByDateRange(ctx context.Context, start, end time.Time) ([]domain.Invoice, error) {
 	//err := r.DB.Where("PaymentDate >= ? AND PaymentDate <= ?", start, end).Find(&payments).Error
 	//err := r.DB.Debug().Table("Payments").Where("'PaymentDate' >= ? AND 'PaymentDate' <= ?", start, end).Find(&payments).Error
-	err := r.DB.Table("Payments").Find(&payments).Error
+	err := r.DB.Table("Invoices").Find(&invoices).Error
 	if err != nil {
-		return []domain.Payment{}, err
+		return []domain.Invoice{}, err
 	}
-	return payments, nil
+	return invoices, nil
 }

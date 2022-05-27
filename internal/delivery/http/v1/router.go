@@ -5,7 +5,7 @@ import (
 	"github.com/jaydenjz/accounting/internal/usecase"
 )
 
-func NewRouter(handler *gin.Engine, u usecase.Payment) {
+func NewRouter(handler *gin.Engine, u usecase.Invoice) {
 	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())
@@ -13,6 +13,6 @@ func NewRouter(handler *gin.Engine, u usecase.Payment) {
 	// Routers
 	v1 := handler.Group("/v1")
 	{
-		newPaymentRoutes(v1, u)
+		newInvoiceRoutes(v1, u)
 	}
 }

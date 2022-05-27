@@ -16,8 +16,8 @@ RUN go mod download && go mod verify
 COPY . .
 
 # Build the binary.
-RUN cd cmd/payment && \
-    go build -v -o /bin/payment
+RUN cd cmd/invoicing && \
+    go build -v -o /bin/invoicing
 
 # Use the official Debian slim image for a lean production container.
 # https://hub.docker.com/_/debian
@@ -29,10 +29,10 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/config /config
-COPY --from=builder /bin/payment /bin/payment
+COPY --from=builder /bin/invoicing /bin/invoicing
 
 # Run the web service on container startup.
-CMD ["/bin/payment"]
+CMD ["/bin/invoicing"]
 
-# docker build --tag docker-payment .
-# docker run --name payment -d docker-payment
+# docker build --tag docker-invoicing .
+# docker run --name invoicing -d docker-invoicing

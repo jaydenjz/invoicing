@@ -9,27 +9,27 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type paymentRoutes struct {
-	u usecase.Payment
+type InvoiceRoutes struct {
+	u usecase.Invoice
 }
 
-func newPaymentRoutes(rg *gin.RouterGroup, u usecase.Payment) {
-	r := &paymentRoutes{u}
-	h := rg.Group("/payment")
+func newInvoiceRoutes(rg *gin.RouterGroup, u usecase.Invoice) {
+	r := &InvoiceRoutes{u}
+	h := rg.Group("/invoice")
 	{
-		h.GET("/", r.getPayment)
+		h.GET("/", r.getInvoice)
 	}
 }
 
-type getPaymentRequest struct {
+type getInvoiceRequest struct {
 	Start time.Time `json:"start" binding:"required"`
 	End   time.Time `json:"end" binding:"required"`
 }
 
-func (r *paymentRoutes) getPayment(ctx *gin.Context) {
+func (r *InvoiceRoutes) getInvoice(ctx *gin.Context) {
 	//var req getPaymentRequest
 	mockTime := time.Now()
-	payments, err := r.u.GetPaymentHistory(ctx.Request.Context(), mockTime, mockTime)
+	payments, err := r.u.GetInvoices(ctx.Request.Context(), mockTime, mockTime)
 	if err != nil {
 		logrus.Error(err)
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, err)
