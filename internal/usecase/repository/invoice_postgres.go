@@ -19,9 +19,7 @@ func New(pg *postgres.Postgres) *InvoiceRepo {
 }
 
 func (r *InvoiceRepo) GetByDateRange(ctx context.Context, start, end time.Time) ([]domain.Invoice, error) {
-	//err := r.DB.Where("PaymentDate >= ? AND PaymentDate <= ?", start, end).Find(&payments).Error
-	//err := r.DB.Debug().Table("Payments").Where("'PaymentDate' >= ? AND 'PaymentDate' <= ?", start, end).Find(&payments).Error
-	err := r.DB.Table("Invoices").Find(&invoices).Error
+	err := r.DB.Table("Invoices").Find(&invoices).Order("'InvoiceNumber DESC'").Error
 	if err != nil {
 		return []domain.Invoice{}, err
 	}

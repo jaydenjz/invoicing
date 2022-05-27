@@ -15,7 +15,7 @@ type Postgres struct {
 func New(url string) (*Postgres, error) {
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
-		logrus.Fatal("Unable to parse DATABASE_URL:", err)
+		logrus.Fatal(err)
 		os.Exit(1)
 	}
 	pg := &Postgres{db}

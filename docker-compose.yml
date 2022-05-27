@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+
+  api:
+    build: .
+    tty: true
+    container_name: invoicing
+    image: invoicing
+    environment:
+      PG_URL: 'postgres://postgres:admin@localhost:5432/accounting'
+    ports:
+      - "5000:5000"
+
+  postgres:
+    image: postgres
+    container_name: invoicing_postgres
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=invoicing
+      - POSTGRES_PASSWORD=invoicing

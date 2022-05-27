@@ -6,11 +6,11 @@ import (
 )
 
 type Invoice struct {
-	Id            int       `gorm:"column:PaymentId"`
-	Amount        float32   `json:"amount"`
-	PaymentDate   time.Time `json:"paymentDate"`
-	PaymentMethod string    `json:"paymentMethod"`
-	CustomerName  string    `json:"customerName"`
+	Id             int       `json:"id" gorm:"column:InvoiceId"`
+	InvoiceNumber  int       `json:"invoiceNumber"`
+	DueDate        time.Time `json:"dueDate"`
+	BillingAddress string    `json:"billingAddress"`
+	TotalAmount    float32   `json:"totalAmount"`
 }
 
 type InvoiceRepository interface {
