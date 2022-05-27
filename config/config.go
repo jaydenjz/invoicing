@@ -40,7 +40,9 @@ type (
 )
 
 func New() (*Config, error) {
-	viper.SetConfigFile("../../config/config.yml")
+	viper.SetConfigName("config")
+	viper.SetConfigType("yml")
+	viper.AddConfigPath("../../config/")
 	err := viper.ReadInConfig()
 	if err != nil {
 		return nil, fmt.Errorf("config error: %w", err)
