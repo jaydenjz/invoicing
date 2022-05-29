@@ -13,14 +13,14 @@ type InvoiceRepo struct {
 }
 
 var invoices []domain.Invoice
+var lineItems []domain.InvoiceLine
 
 func New(pg *postgres.Postgres) *InvoiceRepo {
 	return &InvoiceRepo{pg}
 }
 
 func (r *InvoiceRepo) GetByDateRange(ctx context.Context, start, end time.Time) ([]domain.Invoice, error) {
-	start = start.Truncate(time.Duration(start.Hour()))
-	err := r.DB.Table("Invoices").Find(&invoices).Order("InvoiceNumber DESC").Error
+	err := r.DB.Debug().Preload("Lines").Find(&invoices).Error
 	if err != nil {
 		return []domain.Invoice{}, err
 	}
