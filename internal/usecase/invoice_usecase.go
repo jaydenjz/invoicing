@@ -7,6 +7,7 @@ import (
 	"github.com/jaydenjz/accounting/internal/domain"
 )
 
+//go:generate mockgen -source=invoice_usecase.go -destination=./invoice_usecase_test.go -package=usecase_test
 type (
 	Invoice interface {
 		GetInvoices(context.Context, time.Time, time.Time) ([]domain.Invoice, error)
