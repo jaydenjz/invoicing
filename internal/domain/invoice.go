@@ -5,10 +5,6 @@ import (
 	"time"
 )
 
-func (Invoice) TableName() string {
-	return "Invoices"
-}
-
 type Invoice struct {
 	ID             int           `json:"id" gorm:"column:InvoiceId"`
 	InvoiceNumber  int           `json:"invoiceNumber"  gorm:"column:InvoiceNumber"`
@@ -18,8 +14,8 @@ type Invoice struct {
 	Lines          []InvoiceLine `json:"lines" gorm:"foreignKey:InvoiceID"`
 }
 
-func (InvoiceLine) TableName() string {
-	return "InvoiceLines"
+func (Invoice) TableName() string {
+	return "Invoices"
 }
 
 type InvoiceLine struct {
@@ -32,7 +28,12 @@ type InvoiceLine struct {
 	InvoiceID   int     `json:"invoiceId" gorm:"column:InvoiceId"`
 }
 
+func (InvoiceLine) TableName() string {
+	return "InvoiceLines"
+}
+
 //go:generate mockgen -source=invoice.go -destination=../usecase/repository/invoice_test.go -package=repository_test
 type InvoiceRepository interface {
+	GetByInvoiceNo(ctx context.Context, invcNo int) (*Invoice, error)
 	GetByDateRange(ctx context.Context, start, end time.Time) ([]Invoice, error)
 }
