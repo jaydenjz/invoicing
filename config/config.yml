@@ -1,5 +1,5 @@
 app:
-  name: 'accounting'
+  name: 'invoicing'
   version: '1.0.0'
 
 logger:
