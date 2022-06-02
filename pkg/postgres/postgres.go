@@ -1,9 +1,9 @@
 package postgres
 
 import (
+	"log"
 	"os"
 
-	"github.com/sirupsen/logrus"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -15,7 +15,7 @@ type Postgres struct {
 func New(url string) (*Postgres, error) {
 	db, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
-		logrus.Fatal(err)
+		log.Fatal(err.Error())
 		os.Exit(1)
 	}
 	pg := &Postgres{db}

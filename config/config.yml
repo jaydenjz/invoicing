@@ -2,6 +2,9 @@ app:
   name: 'accounting'
   version: '1.0.0'
 
+logger:
+  level: "debug"
+
 http:
   port: ":5000"
 

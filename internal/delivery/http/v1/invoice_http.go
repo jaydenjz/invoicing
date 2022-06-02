@@ -7,15 +7,16 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jaydenjz/accounting/internal/usecase"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 )
 
 type InvoiceRoutes struct {
 	service usecase.Invoice
+	logger  *zap.Logger
 }
 
-func newInvoiceRoutes(rg *gin.RouterGroup, u usecase.Invoice) {
-	r := &InvoiceRoutes{u}
+func newInvoiceRoutes(rg *gin.RouterGroup, u usecase.Invoice, logger *zap.Logger) {
+	r := &InvoiceRoutes{u, logger}
 	h := rg.Group("/invoice")
 	{
 		h.GET("/", r.getInvoices)
@@ -36,7 +37,7 @@ func (r *InvoiceRoutes) getInvoiceByInvoiceNo(ctx *gin.Context) {
 	}
 	invoices, err := r.service.GetInvoiceByInvoiceNo(ctx.Request.Context(), invNo)
 	if err != nil {
-		logrus.Error(err)
+		r.logger.Error(err.Error())
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}
@@ -48,7 +49,7 @@ func (r *InvoiceRoutes) getInvoices(ctx *gin.Context) {
 	mockTime := time.Now()
 	invoices, err := r.service.GetInvoicesInDateRange(ctx.Request.Context(), mockTime, mockTime)
 	if err != nil {
-		logrus.Error(err)
+		r.logger.Error(err.Error())
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, err)
 		return
 	}

@@ -10,32 +10,31 @@ var Cfg *Config
 
 type (
 	Config struct {
-		App      `mapstructure:"app"`
-		HTTP     `mapstructure:"http"`
-		Log      `mapstructure:"logger"`
-		Postgres `mapstructure:"postgres"`
+		App      `json:"app" mapstructure:"app"`
+		HTTP     `json:"http" mapstructure:"http"`
+		Logger   `json:"logger" mapstructure:"logger"`
+		Postgres `json:"postgres" mapstructure:"postgres"`
 	}
 
 	// App -.
 	App struct {
-		Name    string `mapstructure:"name"`
-		Version string `mapstructure:"version"`
+		Name    string `json:"name" mapstructure:"name"`
+		Version string `json:"version" mapstructure:"version"`
+	}
+
+	Logger struct {
+		Level string `json:"level" mapstructure:"level"`
 	}
 
 	// HTTP -.
 	HTTP struct {
-		Port string `mapstructure:"port"`
-	}
-
-	// Log -.
-	Log struct {
-		Level string `mapstructure:"level"`
+		Port string `json:"port" mapstructure:"port"`
 	}
 
 	// Postgres -.
 	Postgres struct {
-		PoolMax     int    `mapstructure:"pool_max"`
-		DatabaseUrl string `mapstructure:"database_url"`
+		PoolMax     int    `json:"pool_max" mapstructure:"pool_max"`
+		DatabaseUrl string `json:"database_url" mapstructure:"database_url"`
 	}
 )
 

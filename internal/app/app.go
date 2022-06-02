@@ -1,8 +1,6 @@
 package app
 
 import (
-	"net/http"
-
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jaydenjz/accounting/config"
@@ -11,7 +9,7 @@ import (
 	"github.com/jaydenjz/accounting/internal/usecase/repository"
 	"github.com/jaydenjz/accounting/pkg/httpserver"
 	"github.com/jaydenjz/accounting/pkg/postgres"
-	"github.com/sirupsen/logrus"
+	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -19,24 +17,19 @@ var (
 	g errgroup.Group
 )
 
-func RouterTest() http.Handler {
-	e := gin.New()
-	e.Use(gin.Recovery())
-	e.GET("/", func(c *gin.Context) {
-		c.JSON(
-			http.StatusOK,
-			"Welcome server 02",
-		)
-	})
-
-	return e
-}
-
 func Run(cfg *config.Config) {
+	var logger *zap.Logger
+	if cfg.Logger.Level == "info" {
+		logger, _ = zap.NewProduction()
+	} else {
+		logger, _ = zap.NewDevelopment()
+	}
+	defer logger.Sync()
+
 	// Postgres
 	pg, err := postgres.New(cfg.Postgres.DatabaseUrl)
 	if err != nil {
-		logrus.Fatal("app - Run - postgres.New:", err)
+		logger.Fatal(err.Error())
 	}
 	defer pg.Close()
 
@@ -46,13 +39,13 @@ func Run(cfg *config.Config) {
 	// HTTP Server
 	router := gin.New()
 	router.Use(cors.Default())
-	v1.NewRouter(router, invoiceUseCase)
+	v1.NewRouter(router, invoiceUseCase, logger)
 
 	g.Go(func() error {
 		return httpserver.New(router, *cfg)
 	})
 
 	if err := g.Wait(); err != nil {
-		logrus.Fatal(err)
+		logger.Fatal(err.Error())
 	}
 }

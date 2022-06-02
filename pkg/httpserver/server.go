@@ -1,11 +1,11 @@
 package httpserver
 
 import (
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/jaydenjz/accounting/config"
-	"github.com/sirupsen/logrus"
 )
 
 type Server struct {
@@ -26,6 +26,7 @@ func New(handler http.Handler, config config.Config) error {
 		Addr:         config.Port,
 	}
 
-	logrus.Info("Service is running at: http://localhost", httpServer.Addr)
+	log.Print("Service is running at: http://localhost" + httpServer.Addr)
+
 	return httpServer.ListenAndServe()
 }
